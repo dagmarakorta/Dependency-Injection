@@ -1,9 +1,16 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using 
 
 namespace TennisBookings.Pages
 {
     public class IndexModel : PageModel
     {
+		private readonly _weatherForecaster;
+
+		public IndexModel(IRandomWeatherForecaster weatherForecaster)
+		{
+			_weatherForecaster = weatherForecaster;
+		}
 		public string WeatherDescription { get; private set; } =
             "We don't have the latest weather information right now, " +
 			"please check again later.";
@@ -14,11 +21,9 @@ namespace TennisBookings.Pages
 
         public async Task OnGet()
         {
-			var forecaster = new RandomWeatherForecaster();
-
             try
             {
-                var currentWeather = await forecaster
+                var currentWeather = await _weatherForecaster
 					.GetCurrentWeatherAsync("Eastbourne");
 
                 switch (currentWeather.Weather.Summary)
